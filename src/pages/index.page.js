@@ -6,7 +6,7 @@ import {
   Heading,
   Input,
   Text,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -104,7 +104,7 @@ export default function HomePage() {
           </Flex>
           {!sessionState.user.id ? (
             <Flex color="gray.400" mt={3}>
-              You must sign in to create a meeting
+              Sign in to create a meeting
             </Flex>
           ) : null}
         </Flex>

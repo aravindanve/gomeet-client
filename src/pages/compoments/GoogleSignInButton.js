@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
-export default function GoogleSignInButton() {
+export default function GoogleSignInButton(props) {
   const router = useRouter();
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [parentEl, setParentEl] = useState(null);
@@ -33,8 +33,8 @@ export default function GoogleSignInButton() {
 
   return (
     <>
-      <Box ref={setParentEl}>
-        <Spinner color="purple.500" />
+      <Box {...props} ref={setParentEl} height="40px" my="-4px">
+        <Spinner color="purple.500" my="4px" />
       </Box>
       <Script
         src="https://accounts.google.com/gsi/client"

@@ -1,14 +1,17 @@
-import { Avatar, Flex, Link, Spinner, Text } from "@chakra-ui/react";
+import { Avatar, Button, Flex, Spinner, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useSessionContext } from "../../contexts/session";
 import { AuthManager } from "../../services/auth";
 import GoogleSignInButton from "./GoogleSignInButton";
 
 export default function HeaderFlex() {
   const router = useRouter();
-  const [sessionState, sessionDispatch] = useSessionContext();
+  const [sessionState] = useSessionContext();
+  const [loading, setLoading] = useState(false);
 
   const onSignOutClick = async () => {
+    setLoading(true);
     AuthManager.clear();
     router.reload();
   };
@@ -30,9 +33,15 @@ export default function HeaderFlex() {
             <Text noOfLines={1}>{sessionState.user.name}</Text>
           </Flex>
           <Flex alignItems={"center"}>
-            <Link color={"purple.500"} onClick={onSignOutClick}>
+            <Button
+              isLoading={loading}
+              color={"purple.500"}
+              variant="link"
+              loadingText="Signing out"
+              onClick={onSignOutClick}
+            >
               Sign out
-            </Link>
+            </Button>
           </Flex>
         </>
       ) : (
