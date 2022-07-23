@@ -6,16 +6,16 @@ import { SessionProvider, useSessionContext } from "../contexts/session";
 import { SessionAPI } from "../services/api";
 import { AuthManager } from "../services/auth";
 import { getErrorMessage } from "../utils/error";
-import LayoutError from "./compoments/LayoutError";
-import LayoutLoading from "./compoments/LayoutLoading";
+import ErrorScreen from "./components/ErrorScreen";
+import LoadingScreen from "./components/LoadingScreen";
 import theme from "./theme";
 
 const MyAppWithContextValues = ({ Component, pageProps }) => {
   const [sessionState, sessionDispatch] = useSessionContext();
 
+  // init session
   useEffect(() => {
     (async () => {
-      // load session
       const authHeader = await AuthManager.getHeader();
       if (authHeader) {
         try {
@@ -67,9 +67,9 @@ const MyAppWithContextValues = ({ Component, pageProps }) => {
         <link rel="manifest" href="/site.webmanifest"></link>
       </Head>
       {sessionState.loading ? (
-        <LayoutLoading />
+        <LoadingScreen />
       ) : sessionState.userError ? (
-        <LayoutError
+        <ErrorScreen
           message={sessionState.userError}
           showRefresh={true}
           showSignOut={true}

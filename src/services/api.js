@@ -49,9 +49,23 @@ export const AuthAPI = {
   refresh: (authId, data) => APIManager.post(`/auth/${authId}/refresh`, data),
 };
 
-export const MeetingsAPI = {
+export const MeetingAPI = {
   all: (params) => APIManager.get(`/meetings`, { params }),
   one: (meetingId, params) =>
     APIManager.get(`/meetings/${meetingId}`, { params }),
   create: (data) => APIManager.post(`/meetings`, data),
+};
+
+export const ParticipantAPI = {
+  one: (meetingId, participantId, params) =>
+    APIManager.get(`/meetings/${meetingId}/participants/${participantId}`, {
+      params,
+    }),
+  create: (meetingId, data) =>
+    APIManager.post(`/meetings/${meetingId}/participants`, data),
+  update: (meetingId, participantId, data) =>
+    APIManager.put(
+      `/meetings/${meetingId}/participants/${participantId}`,
+      data
+    ),
 };

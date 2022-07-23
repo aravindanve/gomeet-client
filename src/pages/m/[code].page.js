@@ -2,17 +2,31 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useMeetingContext } from "../../contexts/meeting";
-import { MeetingsAPI } from "../../services/api";
+import { MeetingAPI } from "../../services/api";
 import { getErrorMessage } from "../../utils/error";
-import LayoutError from "../compoments/LayoutError";
-import LayoutLoading from "../compoments/LayoutLoading";
-import LayoutMessage from "../compoments/LayoutMessage";
-import MeetingReady from "./components/MeetingReady";
+import ErrorScreen from "../components/ErrorScreen";
+import LoadingScreen from "../components/LoadingScreen";
+import MessageScreen from "../components/MessageScreen";
+import ConferenceScreen from "./components/ConferenceScreen";
+import ReadyScreen from "./components/ReadyScreen";
+import { useConferenceRoom } from "./hooks/useConferenceRoom";
+import { useWaitingRoom } from "./hooks/useWaitingRoom";
 
 export default function MeetingPage() {
   const router = useRouter();
   const [meetingState, meetingDispatch] = useMeetingContext();
 
+  const errorMessage =
+    meetingState.meetingError ||
+    meetingState.waitingRoomError ||
+    meetingState.conferenceRoomError;
+
+  const joined = meetingState.participant.id && meetingState.conferenceRoom;
+
+  useWaitingRoom();
+  useConferenceRoom();
+
+  // init meeting
   useEffect(() => {
     if (!router.query.code) {
       return;
@@ -22,7 +36,7 @@ export default function MeetingPage() {
       try {
         const {
           data: { meetings },
-        } = await MeetingsAPI.all({
+        } = await MeetingAPI.all({
           code: router.query.code,
         });
 
@@ -58,15 +72,15 @@ export default function MeetingPage() {
         <meta name="description" content="Video meetings for everyone" />
       </Head>
       {meetingState.loading ? (
-        <LayoutLoading />
-      ) : meetingState.meetingError ? (
-        <LayoutError message={meetingState.meetingError} showRefresh={true} />
+        <LoadingScreen />
+      ) : errorMessage ? (
+        <ErrorScreen message={errorMessage} showRefresh={true} />
       ) : meetingState.meetingMessage ? (
-        <LayoutMessage message={meetingState.meetingMessage} />
-      ) : meetingState.meeting.id ? (
-        <MeetingReady />
+        <MessageScreen message={meetingState.meetingMessage} />
+      ) : joined ? (
+        <ConferenceScreen />
       ) : (
-        <LayoutError message={"UNKNOWN_MEETING_STATE"} showRefresh={true} />
+        <ReadyScreen />
       )}
     </>
   );

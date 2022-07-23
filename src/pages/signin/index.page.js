@@ -5,8 +5,8 @@ import { useSessionContext } from "../../contexts/session";
 import { AuthAPI, SessionAPI } from "../../services/api";
 import { AuthManager } from "../../services/auth";
 import { getErrorMessage } from "../../utils/error";
-import LayoutError from "../compoments/LayoutError";
-import LayoutLoading from "../compoments/LayoutLoading";
+import ErrorScreen from "../components/ErrorScreen";
+import LoadingScreen from "../components/LoadingScreen";
 
 export async function getServerSideProps(ctx) {
   let idToken;
@@ -29,6 +29,7 @@ export default function SignInPage({ idToken }) {
     error: "",
   });
 
+  // handle signin and redirect
   useEffect(() => {
     (async () => {
       try {
@@ -75,8 +76,8 @@ export default function SignInPage({ idToken }) {
   }, [idToken, router, sessionDispatch]);
 
   return state.loading ? (
-    <LayoutLoading />
+    <LoadingScreen />
   ) : state.error ? (
-    <LayoutError message={state.error} />
+    <ErrorScreen message={state.error} />
   ) : null;
 }

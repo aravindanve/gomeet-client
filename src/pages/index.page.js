@@ -12,32 +12,40 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSessionContext } from "../contexts/session";
+import { MeetingAPI } from "../services/api";
 import { makeErrorToast } from "../utils/toast";
-import LayoutFlex from "./compoments/LayoutFlex";
+import Layout from "./components/Layout";
 
 export default function HomePage() {
   const router = useRouter();
   const toast = useToast();
-  const [sessionState, sessionDispatch] = useSessionContext();
+  const [sessionState] = useSessionContext();
   const [joinState, setJoinState] = useState({
     inputInvalid: false,
     inputValue: "",
   });
 
-  const onCreateClick = () => {
-    // TODO: create meeting
+  const onCreateMeetingClick = async () => {
+    try {
+      const { data: meeting } = await MeetingAPI.create();
+      router.push(`/m/${meeting.code}`);
+    } catch (error) {
+      console.error("error retrieving meetings", error);
+      toast(makeErrorToast(getErrorMessage(error)));
+    }
   };
 
   const onJoinClick = () => {
-    if (!joinState.inputValue) {
+    const inputValue = joinState.inputValue.trim();
+    if (!inputValue) {
       setJoinState((state) => ({ ...state, inputInvalid: true }));
       return;
     }
-    const matches = joinState.inputValue.match(/\/m\/([a-z0-9-]+)/i);
+    const matches = inputValue.match(/\/m\/([a-z0-9-]+)/i);
     if (matches) {
       router.push(`/m/${matches[1]}`);
-    } else if (/^([a-z0-9-]+)$/i.test(joinState.inputValue)) {
-      router.push(`/m/${joinState.inputValue}`);
+    } else if (/^([a-z0-9-]+)$/i.test(inputValue)) {
+      router.push(`/m/${inputValue}`);
     } else {
       setJoinState((state) => ({ ...state, inputInvalid: true }));
       toast(makeErrorToast("Invalid code or link"));
@@ -50,14 +58,9 @@ export default function HomePage() {
         <title>Gomeet</title>
         <meta name="description" content="Video meetings for everyone" />
       </Head>
-      <LayoutFlex
-        type="wide"
-        flexDirection="column"
-        alignItems="stretch"
-        justifyContent="center"
-      >
+      <Layout type="wide" flexDirection="column" justifyContent="center">
         <Flex
-          flex={1}
+          flexGrow={1}
           direction="column"
           justifyContent="center"
           mx={[3, 6]}
@@ -78,6 +81,7 @@ export default function HomePage() {
               leftIcon={<AddIcon />}
               flexShrink={0}
               disabled={!sessionState.user.id}
+              onClick={onCreateMeetingClick}
             >
               Create a meeting
             </Button>
@@ -108,7 +112,7 @@ export default function HomePage() {
             </Flex>
           ) : null}
         </Flex>
-      </LayoutFlex>
+      </Layout>
     </>
   );
 }

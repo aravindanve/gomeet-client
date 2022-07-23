@@ -1,10 +1,10 @@
 import { Flex, Link, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { AuthManager } from "../../services/auth";
-import LayoutFlex from "./LayoutFlex";
-import WrappedLink from "./WrappedLink";
+import WrappedLink from "../components/WrappedLink";
+import Layout from "./Layout";
 
-export default function LayoutError({
+export default function ErrorScreen({
   message,
   showRefresh = false,
   showSignOut = false,
@@ -13,9 +13,9 @@ export default function LayoutError({
   const router = useRouter();
 
   return (
-    <LayoutFlex alignItems="center" justifyContent="center">
+    <Layout alignItems="center" justifyContent="center">
       <Flex direction="column" alignItems="center" gap={3}>
-        <Text color={"red.500"} fontWeight="bold" fontSize={"xl"}>
+        <Text color={"red.500"} fontWeight="semibold" fontSize={"xl"}>
           {message}
         </Text>
         <Flex gap={3}>
@@ -42,6 +42,6 @@ export default function LayoutError({
           ) : null}
         </Flex>
       </Flex>
-    </LayoutFlex>
+    </Layout>
   );
 }

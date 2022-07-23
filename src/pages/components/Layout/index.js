@@ -1,38 +1,33 @@
 import { Flex } from "@chakra-ui/react";
-import FooterFlex from "./FooterFlex";
-import HeaderFlex from "./HeaderFlex";
+import Footer from "./Footer";
+import Header from "./Header";
 
-export default function LayoutFlex({
+export default function Layout({
   type = "full",
-  header = <HeaderFlex />,
-  footer = <FooterFlex />,
+  header = <Header />,
+  footer = <Footer />,
   children,
   ...props
 }) {
   return (
-    <Flex
-      width="100vw"
-      height="100vh"
-      direction="column"
-      justifyContent="stretch"
-      alignItems="stretch"
-    >
+    <Flex width="100vw" minHeight="100vh" direction="column">
       {header ? header : null}
       <Flex
         {...props}
+        flexGrow={1}
         sx={{
           ...props.sx,
           ...(type === "wide"
             ? {
                 margin: "0 auto",
                 width: "100%",
+                height: "100%",
                 maxWidth: "900px",
-                height: "100vh",
               }
             : type === "full"
             ? {
-                width: "100vw",
-                height: "100vh",
+                width: "100%",
+                height: "100%",
               }
             : {}),
         }}

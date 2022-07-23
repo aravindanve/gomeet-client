@@ -1,12 +1,21 @@
-import { Avatar, Button, Flex, Spinner, Text } from "@chakra-ui/react";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import {
+  Avatar,
+  Button,
+  Flex,
+  Spinner,
+  Text,
+  useColorMode,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useSessionContext } from "../../contexts/session";
-import { AuthManager } from "../../services/auth";
+import { useSessionContext } from "../../../contexts/session";
+import { AuthManager } from "../../../services/auth";
 import GoogleSignInButton from "./GoogleSignInButton";
 
-export default function HeaderFlex() {
+export default function Header() {
   const router = useRouter();
+  const { colorMode, toggleColorMode } = useColorMode();
   const [sessionState] = useSessionContext();
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +26,24 @@ export default function HeaderFlex() {
   };
 
   return (
-    <Flex flex={0} justifyContent="end" gap={3} mx={6} my={3}>
+    <Flex
+      flex={0}
+      justifyContent="end"
+      alignItems="center"
+      gap={3}
+      height="32px"
+      mx={6}
+      my={3}
+    >
+      <Button
+        variant="ghost"
+        leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+        onClick={toggleColorMode}
+        height="40px"
+        my="-4px"
+      >
+        Mode
+      </Button>
       {sessionState.loading ? (
         <Spinner color="purple.500" />
       ) : sessionState.user.id ? (
@@ -30,7 +56,9 @@ export default function HeaderFlex() {
             />
           </Flex>
           <Flex alignItems={"center"} maxWidth="30%">
-            <Text noOfLines={1}>{sessionState.user.name}</Text>
+            <Text fontWeight="semibold" noOfLines={1}>
+              {sessionState.user.name}
+            </Text>
           </Flex>
           <Flex alignItems={"center"}>
             <Button

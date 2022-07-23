@@ -1,4 +1,4 @@
-import { Box, Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ export default function GoogleSignInButton(props) {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [parentEl, setParentEl] = useState(null);
 
+  // init and render button
   useEffect(() => {
     if (!scriptLoaded || !parentEl) {
       return;
@@ -21,7 +22,10 @@ export default function GoogleSignInButton(props) {
       ux_mode: "redirect",
     });
 
-    google.accounts.id.renderButton(parentEl, {});
+    google.accounts.id.renderButton(parentEl, {
+      theme: "outline",
+      text: "signin_with",
+    });
   }, [parentEl, router.asPath, scriptLoaded]);
 
   useEffect(() => {
@@ -33,9 +37,17 @@ export default function GoogleSignInButton(props) {
 
   return (
     <>
-      <Box {...props} ref={setParentEl} height="40px" my="-4px">
+      <Flex
+        {...props}
+        ref={setParentEl}
+        height="40px"
+        my="-4px"
+        overflow="hidden"
+        borderRadius="5px"
+        alignItems="center"
+      >
         <Spinner color="purple.500" my="4px" />
-      </Box>
+      </Flex>
       <Script
         src="https://accounts.google.com/gsi/client"
         onLoad={() => setScriptLoaded(true)}
