@@ -5,6 +5,7 @@ const MeetingContext = createContext();
 const initialMeetingState = {
   loading: true,
   meeting: {},
+  meetingLink: "",
   meetingMessage: "",
   meetingError: "",
   participant: {},
@@ -16,6 +17,8 @@ const initialMeetingState = {
   conferenceRoom: undefined,
   conferenceRoomError: "",
   conferenceRoomParticipants: [],
+  leftMessage: "",
+  leftShowRejoin: "",
 };
 
 function meetingReducer(state, action) {
@@ -30,6 +33,11 @@ function meetingReducer(state, action) {
         ...state,
         loading: false,
         meeting: action.payload ?? {},
+      };
+    case "setMeetingLink":
+      return {
+        ...state,
+        meetingLink: action.payload,
       };
     case "setMeetingMessage":
       return {
@@ -111,6 +119,17 @@ function meetingReducer(state, action) {
         ...state,
         participants,
         conferenceRoomParticipants,
+      };
+    case "setLeft":
+      return {
+        ...initialMeetingState,
+        loading: false,
+        leftMessage: action.payload.message ?? "",
+        leftShowRejoin: action.payload.showRejoin ?? false,
+      };
+    case "resetContext":
+      return {
+        ...initialMeetingState,
       };
     default:
       throw new Error(`Unsupported action type ${action.type}`);

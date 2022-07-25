@@ -20,6 +20,7 @@
     "framer-motion": "^6.5.1",
     "livekit-client": "^1.2.4",
     "next": "12.2.2",
+    "rc-tooltip": "^5.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tabler-icons-react": "^1.53.0"

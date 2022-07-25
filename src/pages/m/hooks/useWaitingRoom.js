@@ -1,4 +1,4 @@
-import { Room, RoomEvent } from "livekit-client";
+import { ConnectionState, Room, RoomEvent } from "livekit-client";
 import { useEffect } from "react";
 import { useMeetingContext } from "../../../contexts/meeting";
 import { safeDecodeDataPacketJSON } from "../../../utils/dataPacket";
@@ -25,6 +25,26 @@ export const useWaitingRoom = () => {
 
     let canceled = false;
     let room;
+
+    const onConnectionStateChanged = (state) => {
+      if (state === ConnectionState.Disconnected) {
+        meetingDispatch({
+          type: "setLeft",
+          payload: {
+            message: "You were disconnected from the meeting",
+            showRejoin: true,
+          },
+        });
+      } else {
+        // HACK: catch rejections on newly created connectFuture to
+        // suppress unhandled rejection error until the issue is resolved
+        // https://github.com/livekit/client-sdk-js/issues/356
+        if (room?.connectFuture && !room.connectFuture.promise._handled) {
+          room.connectFuture.promise._handled = true;
+          room.connectFuture.promise.catch(console.warn);
+        }
+      }
+    };
 
     const onParticipantsChanged = (participant) => {
       console.log(participant);
@@ -90,11 +110,12 @@ export const useWaitingRoom = () => {
 
         if (canceled) {
           console.info(logTag, "connection canceled, disconnecting", room);
-          await room.disconnect();
+          await room.disconnect().catch(console.error);
           return;
         }
 
         // handle events
+        room.on(RoomEvent.ConnectionStateChanged, onConnectionStateChanged);
         room.on(RoomEvent.ParticipantConnected, onParticipantsChanged);
         room.on(RoomEvent.ParticipantDisconnected, onParticipantsChanged);
         room.on(RoomEvent.DataReceived, onDataReceived);
@@ -131,6 +152,7 @@ export const useWaitingRoom = () => {
       (async () => {
         try {
           // unhandle events
+          room?.off(RoomEvent.ConnectionStateChanged, onConnectionStateChanged);
           room?.off(RoomEvent.ParticipantConnected, onParticipantsChanged);
           room?.off(RoomEvent.ParticipantDisconnected, onParticipantsChanged);
           room?.off(RoomEvent.DataReceived, onDataReceived);

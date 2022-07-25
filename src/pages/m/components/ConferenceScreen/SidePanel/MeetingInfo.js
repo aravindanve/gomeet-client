@@ -3,13 +3,13 @@ import { X } from "tabler-icons-react";
 import Tooltip from "../../../../components/Tooltip";
 import SidePanelDialog from "./SidePanelDialog";
 
-export default function Messages({ open, onClose }) {
+export default function MeetingInfo({ open, onClose }) {
   return open ? (
     <SidePanelDialog>
       <Flex flexGrow={1} direction="column">
         <Flex alignItems="center" gap={3} mx={3} my={2}>
           <Heading flexGrow={1} fontWeight="normal" size="md">
-            Messages
+            Meeting Info
           </Heading>
           <Flex>
             <Tooltip text="Close">
@@ -24,7 +24,7 @@ export default function Messages({ open, onClose }) {
           </Flex>
         </Flex>
         <Flex flexGrow={1} justifyContent="center" alignItems="center">
-          Messages
+          Meeting Info
         </Flex>
       </Flex>
     </SidePanelDialog>

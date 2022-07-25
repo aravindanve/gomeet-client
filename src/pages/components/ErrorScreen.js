@@ -18,7 +18,7 @@ export default function ErrorScreen({
         <Text color={"red.500"} fontWeight="semibold" fontSize={"xl"}>
           {message}
         </Text>
-        <Flex gap={3}>
+        <Flex gap={4}>
           {showRefresh ? (
             <Link color={"red.500"} onClick={() => router.reload()}>
               Refresh

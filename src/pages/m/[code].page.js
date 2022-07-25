@@ -6,13 +6,21 @@ import { MeetingAPI } from "../../services/api";
 import { getErrorMessage } from "../../utils/error";
 import ErrorScreen from "../components/ErrorScreen";
 import LoadingScreen from "../components/LoadingScreen";
-import MessageScreen from "../components/MessageScreen";
 import ConferenceScreen from "./components/ConferenceScreen";
+import LeftScreen from "./components/LeftScreen";
 import ReadyScreen from "./components/ReadyScreen";
 import { useConferenceRoom } from "./hooks/useConferenceRoom";
 import { useWaitingRoom } from "./hooks/useWaitingRoom";
 
-export default function MeetingPage() {
+export async function getServerSideProps(ctx) {
+  return {
+    props: {
+      host: ctx.req.headers.host,
+    },
+  };
+}
+
+export default function MeetingPage({ host }) {
   const router = useRouter();
   const [meetingState, meetingDispatch] = useMeetingContext();
 
@@ -32,6 +40,12 @@ export default function MeetingPage() {
       return;
     }
 
+    meetingDispatch({
+      type: "setLoading",
+      payload: true,
+    });
+
+    let canceled = false;
     (async () => {
       try {
         const {
@@ -39,6 +53,10 @@ export default function MeetingPage() {
         } = await MeetingAPI.all({
           code: router.query.code,
         });
+
+        if (canceled) {
+          return;
+        }
 
         if (meetings.length) {
           meetingDispatch({
@@ -52,6 +70,10 @@ export default function MeetingPage() {
           });
         }
       } catch (error) {
+        if (canceled) {
+          return;
+        }
+
         console.error("error retrieving meetings", error);
         meetingDispatch({
           type: "setMeetingError",
@@ -59,7 +81,22 @@ export default function MeetingPage() {
         });
       }
     })();
+
+    return () => {
+      canceled = true;
+      meetingDispatch({
+        type: "resetContext",
+      });
+    };
   }, [meetingDispatch, router.query.code]);
+
+  // init meeting link
+  useEffect(() => {
+    meetingDispatch({
+      type: "setMeetingLink",
+      payload: `${host}${router.asPath}`,
+    });
+  }, [host, meetingDispatch, router.asPath]);
 
   return (
     <>
@@ -76,7 +113,12 @@ export default function MeetingPage() {
       ) : errorMessage ? (
         <ErrorScreen message={errorMessage} showRefresh={true} />
       ) : meetingState.meetingMessage ? (
-        <MessageScreen message={meetingState.meetingMessage} />
+        <LeftScreen message={meetingState.meetingMessage} showRejoin={false} />
+      ) : meetingState.leftMessage ? (
+        <LeftScreen
+          message={meetingState.leftMessage}
+          showRejoin={meetingState.leftShowRejoin}
+        />
       ) : joined ? (
         <ConferenceScreen />
       ) : (

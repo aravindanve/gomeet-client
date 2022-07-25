@@ -22,6 +22,8 @@ export const AuthManager = {
         ? auth.refreshTokenExpiresAt
         : auth.accessTokenExpiresAt,
     });
+
+    return auth;
   },
   clear: () => {
     authPromise = undefined;
@@ -72,7 +74,7 @@ export const AuthManager = {
       dayjs(auth.refreshTokenExpiresAt).diff() > 30 * 1000
     ) {
       authPromise = agent
-        .post(`/auth/${auth.id}/refresh`, { refreshToken: auth.refreshToken })
+        .put(`/auth/${auth.id}/refresh`, { refreshToken: auth.refreshToken })
         .then((it) => it.data)
         .then((json) => AuthManager.set(json))
         .catch((error) => {
