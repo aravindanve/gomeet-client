@@ -103,8 +103,8 @@ export default function MeetingPage({ host }) {
       <Head>
         <title>
           {router.query.code
-            ? `Meeting ${router.query.code} - Gomeet`
-            : `Meeting - Gomeet`}
+            ? `Meeting ${router.query.code} - LiveMeet`
+            : `Meeting - LiveMeet`}
         </title>
         <meta name="description" content="Video meetings for everyone" />
       </Head>

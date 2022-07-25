@@ -55,7 +55,7 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Gomeet</title>
+        <title>LiveMeet</title>
         <meta name="description" content="Video meetings for everyone" />
       </Head>
       <Layout type="wide" flexDirection="column" justifyContent="center">
@@ -67,7 +67,7 @@ export default function HomePage() {
           my={3}
         >
           <Box textAlign={["center", "start"]} mb={6}>
-            <Heading>Gomeet</Heading>
+            <Heading>LiveMeet</Heading>
             <Text mt={1}>Video meetings for everyone</Text>
           </Box>
 
