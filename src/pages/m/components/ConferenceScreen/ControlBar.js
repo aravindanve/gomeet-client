@@ -25,17 +25,16 @@ import {
   InfoCircle,
   Maximize,
   Messages,
-  MicrophoneOff,
   Moon,
   PhoneOff,
   ScreenShare,
   Sun,
   Users,
-  VideoOff,
 } from "tabler-icons-react";
 import { useMeetingContext } from "../../../../contexts/meeting";
 import { makeInfoToast } from "../../../../utils/toast";
 import Tooltip from "../../../components/Tooltip";
+import TrackControls from "../TrackControls";
 
 export default function ControlBar({
   activeSidePanelTab,
@@ -52,7 +51,7 @@ export default function ControlBar({
     _onCopyMeetingLink();
     if (!toast.isActive("meetingLinkCopied")) {
       toast(
-        makeInfoToast("meetingLinkCopied", "Your meeting link has been copied!")
+        makeInfoToast("Your meeting link has been copied!", "meetingLinkCopied")
       );
     }
   };
@@ -102,6 +101,9 @@ export default function ControlBar({
                 colorScheme="gray"
                 isRound
                 icon={<Copy />}
+                onClick={() => {
+                  onCopyMeetingLink();
+                }}
               >
                 {meetingState.meeting.code}
               </IconButton>
@@ -109,12 +111,7 @@ export default function ControlBar({
           )}
         </Flex>
         <Flex gap={3}>
-          <Tooltip text="Unmute microphone">
-            <IconButton colorScheme="red" isRound icon={<MicrophoneOff />} />
-          </Tooltip>
-          <Tooltip text="Unmute camera">
-            <IconButton colorScheme="red" isRound icon={<VideoOff />} />
-          </Tooltip>
+          <TrackControls />
           {!mobile ? (
             <>
               <Tooltip text="Start screen sharing">
@@ -198,49 +195,53 @@ export default function ControlBar({
             </>
           ) : null}
           <Menu>
-            <Tooltip text="More">
-              <MenuButton
-                as={IconButton}
-                variant="ghost"
-                colorScheme="gray"
-                isRound
-                icon={<Dots />}
-              >
-                Actions
-              </MenuButton>
-            </Tooltip>
-            <MenuList>
-              {mobile ? (
-                <>
-                  <MenuItem
-                    icon={<Users />}
-                    onClick={() => setActiveSidePanelTab("participants")}
+            {({ isOpen }) => (
+              <>
+                <Tooltip text="More" visible={isOpen ? false : null}>
+                  <MenuButton
+                    as={IconButton}
+                    variant="ghost"
+                    colorScheme="gray"
+                    isRound
+                    icon={<Dots />}
                   >
-                    Participants
-                  </MenuItem>
-                  <MenuItem
-                    icon={<Messages />}
-                    onClick={() => setActiveSidePanelTab("messages")}
-                  >
-                    Messages
-                  </MenuItem>
-                  <MenuItem
-                    icon={<InfoCircle />}
-                    onClick={() => setActiveSidePanelTab("meetingInfo")}
-                  >
-                    Meeting Info
-                  </MenuItem>
-                  <MenuDivider />
-                  <MenuItem
-                    icon={colorMode === "light" ? <Moon /> : <Sun />}
-                    onClick={toggleColorMode}
-                  >
-                    {colorMode === "light" ? "Dark Mode" : "Light Mode"}
-                  </MenuItem>
-                </>
-              ) : null}
-              <MenuItem icon={<Maximize />}>Fullscreen</MenuItem>
-            </MenuList>
+                    Actions
+                  </MenuButton>
+                </Tooltip>
+                <MenuList>
+                  {mobile ? (
+                    <>
+                      <MenuItem
+                        icon={<Users />}
+                        onClick={() => setActiveSidePanelTab("participants")}
+                      >
+                        Participants
+                      </MenuItem>
+                      <MenuItem
+                        icon={<Messages />}
+                        onClick={() => setActiveSidePanelTab("messages")}
+                      >
+                        Messages
+                      </MenuItem>
+                      <MenuItem
+                        icon={<InfoCircle />}
+                        onClick={() => setActiveSidePanelTab("meetingInfo")}
+                      >
+                        Meeting Info
+                      </MenuItem>
+                      <MenuDivider />
+                      <MenuItem
+                        icon={colorMode === "light" ? <Moon /> : <Sun />}
+                        onClick={toggleColorMode}
+                      >
+                        {colorMode === "light" ? "Dark Mode" : "Light Mode"}
+                      </MenuItem>
+                    </>
+                  ) : null}
+                  <MenuItem icon={<Maximize />}>Fullscreen</MenuItem>
+                </MenuList>
+              </>
+            )}
           </Menu>
         </Flex>
       </Flex>

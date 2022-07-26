@@ -1,11 +1,14 @@
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { useState } from "react";
+import { useMeetingContext } from "../../../../contexts/meeting";
 import Layout from "../../../components/Layout";
 import ParticipantView from "../ParticipantView";
+import TrackControls from "../TrackControls";
 import ReadyStep1 from "./ReadyStep1";
 import ReadyStep2 from "./ReadyStep2";
 
 export default function ReadyScreen() {
+  const [meetingState] = useMeetingContext();
   const [state, setState] = useState({
     joining: false,
     joinData: {},
@@ -26,7 +29,7 @@ export default function ReadyScreen() {
         direction="column"
         justifyContent="center"
         mx={[3, 6]}
-        my={[16, 3]}
+        my={[8, 3]}
       >
         <Box textAlign={["center", "start"]} mb={6}>
           <Heading size="lg">Get ready</Heading>
@@ -37,10 +40,23 @@ export default function ReadyScreen() {
         </Box>
 
         <Flex flexGrow={1} direction={["column", "row"]} gap={6}>
-          <Flex flexGrow={1} width={["100%", "50%"]}>
-            <ParticipantView />
+          <Flex flexGrow={1} direction="column" width={["100%", "50%"]}>
+            <ParticipantView
+              track={meetingState.localVideoTrack}
+              isMuted={meetingState.localAudioTrackMuted}
+              isLocal={true}
+              isPreview={true}
+            />
+            <Flex justifyContent="center" gap={3} p={3}>
+              <TrackControls />
+            </Flex>
           </Flex>
-          <Flex flexGrow={1} width={["100%", "50%"]} direction="column">
+          <Flex
+            flexGrow={1}
+            width={["100%", "50%"]}
+            direction="column"
+            pb={[0, 16]}
+          >
             {!state.joining ? (
               <ReadyStep1 joinData={state.joinData} onJoinClick={onJoinClick} />
             ) : (

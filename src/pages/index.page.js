@@ -20,16 +20,19 @@ export default function HomePage() {
   const router = useRouter();
   const toast = useToast();
   const [sessionState] = useSessionContext();
+  const [meetingCreating, setMeetingCreating] = useState(false);
   const [joinState, setJoinState] = useState({
     inputInvalid: false,
     inputValue: "",
   });
 
   const onCreateMeetingClick = async () => {
+    setMeetingCreating(true);
     try {
       const { data: meeting } = await MeetingAPI.create();
       router.push(`/m/${meeting.code}`);
     } catch (error) {
+      setMeetingCreating(false);
       console.error("error retrieving meetings", error);
       toast(makeErrorToast(getErrorMessage(error)));
     }
@@ -82,6 +85,8 @@ export default function HomePage() {
               flexShrink={0}
               disabled={!sessionState.user.id}
               onClick={onCreateMeetingClick}
+              isLoading={meetingCreating}
+              loadingText="Creating a meeting"
             >
               Create a meeting
             </Button>

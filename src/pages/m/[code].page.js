@@ -10,6 +10,7 @@ import ConferenceScreen from "./components/ConferenceScreen";
 import LeftScreen from "./components/LeftScreen";
 import ReadyScreen from "./components/ReadyScreen";
 import { useConferenceRoom } from "./hooks/useConferenceRoom";
+import { useLocalTracks } from "./hooks/useLocalTracks";
 import { useWaitingRoom } from "./hooks/useWaitingRoom";
 
 export async function getServerSideProps(ctx) {
@@ -31,12 +32,13 @@ export default function MeetingPage({ host }) {
 
   const joined = meetingState.participant.id && meetingState.conferenceRoom;
 
+  useLocalTracks();
   useWaitingRoom();
   useConferenceRoom();
 
   // init meeting
   useEffect(() => {
-    if (!router.query.code) {
+    if (!router.query.code || meetingState.left) {
       return;
     }
 
@@ -84,11 +86,8 @@ export default function MeetingPage({ host }) {
 
     return () => {
       canceled = true;
-      meetingDispatch({
-        type: "resetContext",
-      });
     };
-  }, [meetingDispatch, router.query.code]);
+  }, [meetingDispatch, meetingState.left, router.query.code]);
 
   // init meeting link
   useEffect(() => {
@@ -97,6 +96,15 @@ export default function MeetingPage({ host }) {
       payload: `${host}${router.asPath}`,
     });
   }, [host, meetingDispatch, router.asPath]);
+
+  // reset meeting
+  useEffect(() => {
+    return () => {
+      meetingDispatch({
+        type: "resetContext",
+      });
+    };
+  }, [meetingDispatch]);
 
   return (
     <>
@@ -114,7 +122,7 @@ export default function MeetingPage({ host }) {
         <ErrorScreen message={errorMessage} showRefresh={true} />
       ) : meetingState.meetingMessage ? (
         <LeftScreen message={meetingState.meetingMessage} showRejoin={false} />
-      ) : meetingState.leftMessage ? (
+      ) : meetingState.left ? (
         <LeftScreen
           message={meetingState.leftMessage}
           showRejoin={meetingState.leftShowRejoin}

@@ -1,10 +1,19 @@
-import { ConnectionState, Room, RoomEvent, VideoPresets } from "livekit-client";
+import {
+  ConnectionState,
+  LogLevel,
+  Room,
+  RoomEvent,
+  setLogLevel,
+  VideoPresets,
+} from "livekit-client";
 import { useEffect } from "react";
 import { useMeetingContext } from "../../../contexts/meeting";
 import { safeDecodeDataPacketJSON } from "../../../utils/dataPacket";
 import { getErrorMessage } from "../../../utils/error";
 
 const logTag = "CONFERENCE_ROOM";
+
+setLogLevel(LogLevel.debug);
 
 export const useConferenceRoom = () => {
   const [meetingState, meetingDispatch] = useMeetingContext();
@@ -16,6 +25,7 @@ export const useConferenceRoom = () => {
   // manage room
   useEffect(() => {
     if (
+      meetingState.left ||
       !meetingState.meeting.id ||
       !meetingState.participant.id ||
       !roomToken
@@ -173,6 +183,7 @@ export const useConferenceRoom = () => {
     };
   }, [
     meetingDispatch,
+    meetingState.left,
     meetingState.meeting.id,
     meetingState.participant.id,
     roomToken,

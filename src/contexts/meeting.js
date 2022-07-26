@@ -11,12 +11,21 @@ const initialMeetingState = {
   participant: {},
   participants: [],
   participantsWaiting: [],
+  localAudioTrack: undefined,
+  localAudioTrackError: "",
+  localAudioTrackMuted: false,
+  localAudioTrackDeviceId: undefined,
+  localVideoTrack: undefined,
+  localVideoTrackError: "",
+  localVideoTrackMuted: false,
+  localVideoTrackDeviceId: undefined,
   waitingRoom: undefined,
   waitingRoomError: "",
   waitingRoomParticipants: [],
   conferenceRoom: undefined,
   conferenceRoomError: "",
   conferenceRoomParticipants: [],
+  left: false,
   leftMessage: "",
   leftShowRejoin: "",
 };
@@ -56,6 +65,58 @@ function meetingReducer(state, action) {
         ...state,
         participant: action.payload ?? {},
       };
+    case "setLocalAudioTrack":
+      return {
+        ...state,
+        localAudioTrack: action.payload,
+      };
+    case "setLocalAudioTrackError":
+      return {
+        ...state,
+        localAudioTrackError: action.payload ?? "",
+      };
+    case "setLocalAudioTrackMuted":
+      return {
+        ...state,
+        localAudioTrackMuted: action.payload ?? false,
+      };
+    case "setLocalAudioTrackDeviceId":
+      return {
+        ...state,
+        localAudioTrackDeviceId: action.payload,
+      };
+    case "setLocalAudioTrackDeviceIdIfUnset":
+      return {
+        ...state,
+        localAudioTrackDeviceId:
+          state.localAudioTrackDeviceId ?? action.payload,
+      };
+    case "setLocalVideoTrack":
+      return {
+        ...state,
+        localVideoTrack: action.payload,
+      };
+    case "setLocalVideoTrackError":
+      return {
+        ...state,
+        localVideoTrackError: action.payload ?? "",
+      };
+    case "setLocalVideoTrackMuted":
+      return {
+        ...state,
+        localVideoTrackMuted: action.payload ?? false,
+      };
+    case "setLocalVideoTrackDeviceId":
+      return {
+        ...state,
+        localVideoTrackDeviceId: action.payload,
+      };
+    case "setLocalVideoTrackDeviceIdIfUnset":
+      return {
+        ...state,
+        localVideoTrackDeviceId:
+          state.localVideoTrackDeviceId ?? action.payload,
+      };
     case "setWaitingRoom":
       return {
         ...state,
@@ -68,7 +129,7 @@ function meetingReducer(state, action) {
       };
     case "setWaitingRoomParticipants":
       const waitingRoomParticipants = action.payload ?? [];
-      const participantWaiting = waitingRoomParticipants.map((it) => {
+      const participantsWaiting = waitingRoomParticipants.map((it) => {
         let metadata;
         try {
           metadata = JSON.parse(it.metadata);
@@ -85,7 +146,7 @@ function meetingReducer(state, action) {
 
       return {
         ...state,
-        participantWaiting,
+        participantsWaiting,
         waitingRoomParticipants,
       };
     case "setConferenceRoom":
@@ -122,8 +183,8 @@ function meetingReducer(state, action) {
       };
     case "setLeft":
       return {
-        ...initialMeetingState,
-        loading: false,
+        ...state,
+        left: true,
         leftMessage: action.payload.message ?? "",
         leftShowRejoin: action.payload.showRejoin ?? false,
       };

@@ -16,6 +16,7 @@ export const useWaitingRoom = () => {
   // manage room
   useEffect(() => {
     if (
+      meetingState.left ||
       !meetingState.meeting.id ||
       !meetingState.participant.id ||
       !roomToken
@@ -47,7 +48,6 @@ export const useWaitingRoom = () => {
     };
 
     const onParticipantsChanged = (participant) => {
-      console.log(participant);
       const participants = [
         room.localParticipant,
         ...Array.from(room.participants.values()),
@@ -167,6 +167,7 @@ export const useWaitingRoom = () => {
     };
   }, [
     meetingDispatch,
+    meetingState.left,
     meetingState.meeting.id,
     meetingState.participant.id,
     roomToken,

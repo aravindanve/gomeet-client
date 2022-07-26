@@ -1,18 +1,11 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormLabel,
-  Heading,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useMeetingContext } from "../../../../contexts/meeting";
 import { useSessionContext } from "../../../../contexts/session";
 import { ParticipantAPI } from "../../../../services/api";
 import { getErrorMessage } from "../../../../utils/error";
+import TrackDetails from "../TrackDetails";
 
 export default function ReadyStep2({ joinData }) {
   const router = useRouter();
@@ -67,13 +60,7 @@ export default function ReadyStep2({ joinData }) {
         </Flex>
       </Box>
       <Box width="100%">
-        <FormLabel textAlign={["center", "start"]}>
-          Camera &amp; Microphone
-        </FormLabel>
-        <Text color="gray.500" textAlign={["center", "start"]}>
-          You can change your camera, microphone or mute them using the controls
-          on the preview
-        </Text>
+        <TrackDetails />
       </Box>
       <Box width="100%" textAlign={["center", "start"]}>
         <Button flexShrink={0} onClick={() => router.push("/")}>

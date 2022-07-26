@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMeetingContext } from "../../../../contexts/meeting";
 import { useSessionContext } from "../../../../contexts/session";
+import TrackDetails from "../TrackDetails";
 
 export default function ReadyStep1({ joinData, onJoinClick }) {
   const router = useRouter();
@@ -82,13 +83,7 @@ export default function ReadyStep1({ joinData, onJoinClick }) {
         )}
       </Box>
       <Box width="100%">
-        <FormLabel textAlign={["center", "start"]}>
-          Camera &amp; Microphone
-        </FormLabel>
-        <Text color="gray.500" textAlign={["center", "start"]}>
-          You can change your camera, microphone or mute them using the controls
-          on the preview
-        </Text>
+        <TrackDetails />
       </Box>
       <Box width="100%" textAlign={["center", "start"]}>
         <Button

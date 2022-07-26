@@ -1,4 +1,4 @@
-export const makeInfoToast = (id, message) => {
+export const makeInfoToast = (message, id) => {
   return {
     id,
     position: "top",
@@ -9,8 +9,9 @@ export const makeInfoToast = (id, message) => {
   };
 };
 
-export const makeErrorToast = (message) => {
+export const makeErrorToast = (message, id) => {
   return {
+    id,
     position: "top",
     title: "Error",
     description: message,

@@ -1,12 +1,17 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useMeetingContext } from "../../../contexts/meeting";
 import Layout from "../../components/Layout";
 
 export default function LeftScreen({ message, showRejoin }) {
   const router = useRouter();
+  const [, meetingDispatch] = useMeetingContext();
 
   const onRejoinClick = () => {
-    router.reload();
+    meetingDispatch({
+      type: "resetContext",
+    });
+    // router.reload();
   };
 
   return (
