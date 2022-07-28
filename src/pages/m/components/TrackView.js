@@ -6,7 +6,8 @@ import TrackLabel from "./TrackLabel";
 export default function TrackView({
   name,
   imageUrl,
-  track,
+  audioTrack,
+  videoTrack,
   isAudioMuted,
   isVideoMuted,
   isLocal,
@@ -15,24 +16,36 @@ export default function TrackView({
 }) {
   const bg = useColorModeValue("gray.100", "gray.900");
   const [videoEl, setVideoEl] = useState();
+  const [audioEl, setAudioEl] = useState();
 
   const isFrontFacing =
     isLocal &&
-    track?.mediaStreamTrack?.getSettings().facingMode !== "environment";
+    videoTrack?.mediaStreamTrack?.getSettings().facingMode !== "environment";
 
-  const isVideoShown = track && !isVideoMuted;
+  const isVideoShown = videoTrack && !isVideoMuted;
 
   useEffect(() => {
-    if (!videoEl || !track) {
+    if (!videoEl || !videoTrack) {
       return;
     }
 
     videoEl.muted = true;
-    track.attach(videoEl);
+    videoTrack.attach(videoEl);
     return () => {
-      track.detach(videoEl);
+      videoTrack.detach(videoEl);
     };
-  }, [track, videoEl]);
+  }, [videoTrack, videoEl]);
+
+  useEffect(() => {
+    if (!audioEl || !audioTrack) {
+      return;
+    }
+
+    audioTrack.attach(audioEl);
+    return () => {
+      audioTrack.detach(audioEl);
+    };
+  }, [audioTrack, audioEl]);
 
   return (
     <AspectBox
@@ -43,6 +56,7 @@ export default function TrackView({
       overflow="hidden"
     >
       <Flex justifyContent="center" alignItems="center" height="100%">
+        {!isLocal ? <Box as="audio" ref={setAudioEl} /> : null}
         <Box
           as="video"
           ref={setVideoEl}

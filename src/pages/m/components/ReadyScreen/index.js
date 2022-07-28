@@ -42,7 +42,7 @@ export default function ReadyScreen() {
         <Flex flexGrow={1} direction={["column", "row"]} gap={6}>
           <Flex flexGrow={1} direction="column" width={["100%", "50%"]}>
             <TrackView
-              track={meetingState.localVideoTrack}
+              videoTrack={meetingState.localVideoTrack}
               isAudioMuted={meetingState.localAudioTrackMuted}
               isVideoMuted={meetingState.localVideoTrackMuted}
               isLocal={true}
