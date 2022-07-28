@@ -67,7 +67,7 @@ export default function TrackView({
         </Flex>
       ) : null}
       {!isPreview ? (
-        <TrackLabel name={name} isAudioMuted={isAudioMuted} />
+        <TrackLabel name={name} isLocal={isLocal} isAudioMuted={isAudioMuted} />
       ) : null}
     </AspectBox>
   );

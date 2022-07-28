@@ -1,7 +1,7 @@
 import { Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import { MicrophoneOff } from "tabler-icons-react";
 
-export default function TrackLabel({ name, isAudioMuted }) {
+export default function TrackLabel({ name, isLocal, isAudioMuted }) {
   const bg = useColorModeValue("whiteAlpha.800", "blackAlpha.800");
 
   return (
@@ -22,6 +22,7 @@ export default function TrackLabel({ name, isAudioMuted }) {
 
         <Text noOfLines={1} fontSize="sm">
           {name}
+          {isLocal ? " (You)" : ""}
         </Text>
       </Flex>
     </Flex>
