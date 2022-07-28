@@ -2,8 +2,8 @@ import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useMeetingContext } from "../../../../contexts/meeting";
 import Layout from "../../../components/Layout";
-import ParticipantView from "../ParticipantView";
 import TrackControls from "../TrackControls";
+import TrackView from "../TrackView";
 import ReadyStep1 from "./ReadyStep1";
 import ReadyStep2 from "./ReadyStep2";
 
@@ -41,9 +41,10 @@ export default function ReadyScreen() {
 
         <Flex flexGrow={1} direction={["column", "row"]} gap={6}>
           <Flex flexGrow={1} direction="column" width={["100%", "50%"]}>
-            <ParticipantView
+            <TrackView
               track={meetingState.localVideoTrack}
-              isMuted={meetingState.localAudioTrackMuted}
+              isAudioMuted={meetingState.localAudioTrackMuted}
+              isVideoMuted={meetingState.localVideoTrackMuted}
               isLocal={true}
               isPreview={true}
             />

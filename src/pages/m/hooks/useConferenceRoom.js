@@ -13,8 +13,6 @@ import { getErrorMessage } from "../../../utils/error";
 
 const logTag = "CONFERENCE_ROOM";
 
-setLogLevel(LogLevel.debug);
-
 export const useConferenceRoom = () => {
   const [meetingState, meetingDispatch] = useMeetingContext();
 
@@ -36,6 +34,8 @@ export const useConferenceRoom = () => {
     let canceled = false;
     let room;
 
+    setLogLevel(LogLevel.info);
+
     const onConnectionStateChanged = (state) => {
       if (state === ConnectionState.Disconnected) {
         meetingDispatch({
@@ -56,7 +56,7 @@ export const useConferenceRoom = () => {
       }
     };
 
-    const onParticipantsChanged = () => () => {
+    const onParticipantsChanged = () => {
       const participants = [
         room.localParticipant,
         ...Array.from(room.participants.values()),
@@ -141,6 +141,10 @@ export const useConferenceRoom = () => {
           type: "setConferenceRoom",
           payload: room,
         });
+
+        // set initial state
+        onParticipantsChanged();
+
         console.info(logTag, "setup complete", room);
         //
       } catch (error) {

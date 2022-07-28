@@ -125,6 +125,10 @@ export const useWaitingRoom = () => {
           type: "setWaitingRoom",
           payload: room,
         });
+
+        // populate local participant
+        onParticipantsChanged();
+
         console.info(logTag, "setup complete", room);
         //
       } catch (error) {

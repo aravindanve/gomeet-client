@@ -163,7 +163,7 @@ export default function TrackControls() {
                       </MenuItem>
                     ))
                   ) : (
-                    <MenuItem isDisabled={true} key={-1}>
+                    <MenuItem key={-1} isDisabled={true}>
                       No devices found
                     </MenuItem>
                   )}
@@ -222,7 +222,7 @@ export default function TrackControls() {
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem isDisabled={true} key={-1}>
+                  <MenuItem key={-1} isDisabled={true}>
                     No devices found
                   </MenuItem>
                 )}

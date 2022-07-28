@@ -13,7 +13,14 @@ export default function SidePanelDialog({ children }) {
         left: 0,
       }}
     >
-      <Flex flexGrow={1} bg={bg} borderRadius="md" width="360px" m={3}>
+      <Flex
+        flexGrow={1}
+        bg={bg}
+        borderRadius="md"
+        width="360px"
+        m={2}
+        ml={[2, 0]}
+      >
         {children}
       </Flex>
     </Flex>

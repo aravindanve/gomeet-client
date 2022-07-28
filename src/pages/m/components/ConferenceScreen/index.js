@@ -7,20 +7,18 @@ import SidePanel from "./SidePanel";
 import Stage from "./Stage";
 
 export default function ConferenceScreen() {
-  const bg = useColorModeValue("gray.300", "gray.900");
+  const bg = useColorModeValue("gray.300", "gray.800");
   const [meetingState] = useMeetingContext();
   const [activeSidePanelTab, setActiveSidePanelTab] = useState();
 
   // TODO:
   // show track errors
   // participant count
-  // speaker vs grid mode
+  // speaker vs ~grid mode~
   // participant panel
   // chat panel
   // screen share
   // signal stats
-
-  // TODO: debug audio and video publish after unpublish
 
   const audioQueue = useRef(Promise.resolve());
 
@@ -29,9 +27,12 @@ export default function ConferenceScreen() {
     const room = meetingState.conferenceRoom;
     const track = meetingState.localAudioTrack;
 
-    if (!room || !track) {
+    if (meetingState.left || !room || !track) {
       return;
     }
+
+    // HACK: livekit times out if publish and unpublish are called too quickly
+    const wait = () => new Promise((r) => setTimeout(r, 3000));
 
     const publish = async () => {
       try {
@@ -52,13 +53,17 @@ export default function ConferenceScreen() {
     };
 
     // chain publish to queue
-    audioQueue.current = audioQueue.current.then(publish);
+    audioQueue.current = audioQueue.current.then(publish).then(wait);
 
     return () => {
       // chain unpublish to queue
-      audioQueue.current = audioQueue.current.then(unpublish);
+      audioQueue.current = audioQueue.current.then(unpublish).then(wait);
     };
-  }, [meetingState.conferenceRoom, meetingState.localAudioTrack]);
+  }, [
+    meetingState.conferenceRoom,
+    meetingState.left,
+    meetingState.localAudioTrack,
+  ]);
 
   const videoQueue = useRef(Promise.resolve());
 
@@ -67,9 +72,12 @@ export default function ConferenceScreen() {
     const room = meetingState.conferenceRoom;
     const track = meetingState.localVideoTrack;
 
-    if (!room || !track) {
+    if (meetingState.left || !room || !track) {
       return;
     }
+
+    // HACK: livekit times out if publish and unpublish are called too quickly
+    const wait = () => new Promise((r) => setTimeout(r, 3000));
 
     const publish = async () => {
       try {
@@ -90,13 +98,17 @@ export default function ConferenceScreen() {
     };
 
     // chain publish to queue
-    videoQueue.current = videoQueue.current.then(publish);
+    videoQueue.current = videoQueue.current.then(publish).then(wait);
 
     return () => {
       // chain unpublish to queue
-      videoQueue.current = videoQueue.current.then(unpublish);
+      videoQueue.current = videoQueue.current.then(unpublish).then(wait);
     };
-  }, [meetingState.conferenceRoom, meetingState.localVideoTrack]);
+  }, [
+    meetingState.conferenceRoom,
+    meetingState.left,
+    meetingState.localVideoTrack,
+  ]);
 
   return (
     <Layout bg={bg} flexDirection="column" header={null} footer={null}>

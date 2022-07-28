@@ -45,19 +45,22 @@ export const useLocalTracks = () => {
     let canceled = false;
     if (meetingState.localAudioTrackMuted) {
       // mute track if present
-      const track = meetingState.localAudioTrack;
-      if (track) {
-        track.mute().catch(console.error);
-        console.log(logTag, "muted audio track");
-      }
+      meetingState.localAudioTrack
+        ?.mute()
+        .then(() => console.log(logTag, "muted audio track"))
+        .catch(console.error);
     } else {
-      // unmute track if present
-      const track = meetingState.localAudioTrack;
-      if (track) {
-        track.unmute().catch(console.error);
-        console.log(logTag, "unmuted audio track");
+      // unmute track if present or create
+      if (meetingState.localAudioTrack) {
+        meetingState.localAudioTrack
+          .unmute()
+          .then(() => console.log(logTag, "unmuted audio track"))
+          .catch(console.error);
       } else {
         (async () => {
+          if (canceled) {
+            return;
+          }
           try {
             // create track
             const track = await createLocalAudioTrack().catch(
@@ -94,11 +97,11 @@ export const useLocalTracks = () => {
       canceled = true;
     };
   }, [
+    audioErrorHandler,
     meetingDispatch,
+    meetingState.left,
     meetingState.localAudioTrack,
     meetingState.localAudioTrackMuted,
-    audioErrorHandler,
-    meetingState.left,
   ]);
 
   // stop video track on clear
@@ -121,18 +124,25 @@ export const useLocalTracks = () => {
 
     let canceled = false;
     if (meetingState.localVideoTrackMuted) {
-      // clear track if present
-      if (meetingState.localVideoTrack) {
-        meetingDispatch({
-          type: "setLocalVideoTrack",
-          payload: undefined,
-        });
-      }
+      // mute track if present
+      meetingState.localVideoTrack
+        ?.mute()
+        .then(() => console.log(logTag, "muted video track"))
+        .catch(console.error);
     } else {
-      // create track if not present
-      if (!meetingState.localVideoTrack) {
+      // unmute track if present or create
+      if (meetingState.localVideoTrack) {
+        meetingState.localVideoTrack
+          .unmute()
+          .then(() => console.log(logTag, "unmuted video track"))
+          .catch(console.error);
+      } else {
         (async () => {
+          if (canceled) {
+            return;
+          }
           try {
+            // create track
             const track = await createLocalVideoTrack().catch(
               videoErrorHandler
             );
@@ -146,7 +156,7 @@ export const useLocalTracks = () => {
               payload: track,
             });
 
-            // set audio device id if unset
+            // set video device id if unset
             const deviceId = track.mediaStreamTrack?.getSettings()?.deviceId;
             if (deviceId) {
               meetingDispatch({
@@ -154,6 +164,7 @@ export const useLocalTracks = () => {
                 payload: deviceId,
               });
             }
+
             console.log(logTag, "created video track");
           } catch (error) {
             console.error(logTag, "error creating video track", error);
@@ -166,11 +177,11 @@ export const useLocalTracks = () => {
       canceled = true;
     };
   }, [
+    videoErrorHandler,
     meetingDispatch,
     meetingState.left,
     meetingState.localVideoTrack,
     meetingState.localVideoTrackMuted,
-    videoErrorHandler,
   ]);
 
   // manage audio track device changed
