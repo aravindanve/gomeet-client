@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 const logTag = "CONFERENCE_PARTICIPANT";
 
 export const useConferenceParticipant = (participant) => {
-  const [isAudioMuted, setAudioMuted] = useState(false);
-  const [isVideoMuted, setVideoMuted] = useState(false);
+  const [isAudioMuted, setAudioMuted] = useState(true);
+  const [isVideoMuted, setVideoMuted] = useState(true);
   const [connectionQuality, setConnectionQuality] = useState(
     participant.connectionQuality
   );
@@ -61,6 +61,15 @@ export const useConferenceParticipant = (participant) => {
           return pub.isSubscribed && pub.track !== undefined;
         })
       );
+
+      for (const pub of participant.audioTracks) {
+        setAudioMuted(pub.isMuted);
+        break;
+      }
+      for (const pub of participant.videoTracks) {
+        setVideoMuted(pub.isMuted);
+        break;
+      }
     };
 
     const onConnectionQualityUpdate = () => {
@@ -85,13 +94,6 @@ export const useConferenceParticipant = (participant) => {
     onMetadataChanged();
     onIsSpeakingChanged();
     onPublicationsChanged();
-
-    for (const pub of participant.audioTracks) {
-      setAudioMuted(pub.isMuted);
-    }
-    for (const pub of participant.videoTracks) {
-      setVideoMuted(pub.isMuted);
-    }
 
     return () => {
       // cleanup

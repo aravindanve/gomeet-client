@@ -14,10 +14,12 @@ const initialMeetingState = {
   localAudioTrack: undefined,
   localAudioTrackError: "",
   localAudioTrackMuted: false,
+  localAudioTrackMutedActualState: false,
   localAudioTrackDeviceId: undefined,
   localVideoTrack: undefined,
   localVideoTrackError: "",
   localVideoTrackMuted: false,
+  localVideoTrackMutedActualState: false,
   localVideoTrackDeviceId: undefined,
   waitingRoom: undefined,
   waitingRoomError: "",
@@ -80,6 +82,11 @@ function meetingReducer(state, action) {
         ...state,
         localAudioTrackMuted: action.payload ?? false,
       };
+    case "setLocalAudioTrackMutedActualState":
+      return {
+        ...state,
+        localAudioTrackMutedActualState: action.payload ?? false,
+      };
     case "setLocalAudioTrackDeviceId":
       return {
         ...state,
@@ -105,6 +112,11 @@ function meetingReducer(state, action) {
       return {
         ...state,
         localVideoTrackMuted: action.payload ?? false,
+      };
+    case "setLocalVideoTrackMutedActualState":
+      return {
+        ...state,
+        localVideoTrackMutedActualState: action.payload ?? false,
       };
     case "setLocalVideoTrackDeviceId":
       return {

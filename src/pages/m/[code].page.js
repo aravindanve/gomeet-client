@@ -9,6 +9,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import ConferenceScreen from "./components/ConferenceScreen";
 import LeftScreen from "./components/LeftScreen";
 import ReadyScreen from "./components/ReadyScreen";
+import { useConferencePublish } from "./hooks/useConferencePublish";
 import { useConferenceRoom } from "./hooks/useConferenceRoom";
 import { useLocalTracks } from "./hooks/useLocalTracks";
 import { useWaitingRoom } from "./hooks/useWaitingRoom";
@@ -35,6 +36,7 @@ export default function MeetingPage({ host }) {
   useLocalTracks();
   useWaitingRoom();
   useConferenceRoom();
+  useConferencePublish();
 
   // init meeting
   useEffect(() => {

@@ -43,29 +43,51 @@ export const useLocalTracks = () => {
     }
 
     let canceled = false;
-    if (meetingState.localAudioTrackMuted) {
-      // mute track if present
-      meetingState.localAudioTrack
-        ?.mute()
-        .then(() => console.log(logTag, "muted audio track"))
-        .catch(console.error);
-    } else {
-      // unmute track if present or create
-      if (meetingState.localAudioTrack) {
-        meetingState.localAudioTrack
-          .unmute()
-          .then(() => console.log(logTag, "unmuted audio track"))
-          .catch(console.error);
-      } else {
-        (async () => {
-          if (canceled) {
-            return;
+
+    (async () => {
+      if (canceled) {
+        return;
+      }
+      try {
+        if (meetingState.localAudioTrackMuted) {
+          // mute track if present
+          const track = meetingState.localAudioTrack;
+          if (track) {
+            await track.mute();
+
+            if (canceled) {
+              return;
+            }
+
+            meetingDispatch({
+              type: "setLocalAudioTrackMutedActualState",
+              payload: track.isMuted,
+            });
+
+            console.log(logTag, "muted audio track");
           }
-          try {
+        } else {
+          // unmute track if present or create
+          const track = meetingState.localAudioTrack;
+          if (track) {
+            await track.unmute();
+
+            if (canceled) {
+              return;
+            }
+
+            meetingDispatch({
+              type: "setLocalAudioTrackMutedActualState",
+              payload: track.isMuted,
+            });
+
+            console.log(logTag, "unmuted audio track");
+          } else {
             // create track
             const track = await createLocalAudioTrack().catch(
               audioErrorHandler
             );
+
             if (canceled) {
               track?.stop();
               return;
@@ -86,12 +108,12 @@ export const useLocalTracks = () => {
             }
 
             console.log(logTag, "created audio track");
-          } catch (error) {
-            console.error(logTag, "error creating audio track", error);
           }
-        })();
+        }
+      } catch (error) {
+        console.error(logTag, "error handling audio track", error);
       }
-    }
+    })();
 
     return () => {
       canceled = true;
@@ -123,29 +145,51 @@ export const useLocalTracks = () => {
     }
 
     let canceled = false;
-    if (meetingState.localVideoTrackMuted) {
-      // mute track if present
-      meetingState.localVideoTrack
-        ?.mute()
-        .then(() => console.log(logTag, "muted video track"))
-        .catch(console.error);
-    } else {
-      // unmute track if present or create
-      if (meetingState.localVideoTrack) {
-        meetingState.localVideoTrack
-          .unmute()
-          .then(() => console.log(logTag, "unmuted video track"))
-          .catch(console.error);
-      } else {
-        (async () => {
-          if (canceled) {
-            return;
+
+    (async () => {
+      if (canceled) {
+        return;
+      }
+      try {
+        if (meetingState.localVideoTrackMuted) {
+          // mute track if present
+          const track = meetingState.localVideoTrack;
+          if (track) {
+            await track.mute();
+
+            if (canceled) {
+              return;
+            }
+
+            meetingDispatch({
+              type: "setLocalVideoTrackMutedActualState",
+              payload: track.isMuted,
+            });
+
+            console.log(logTag, "muted video track");
           }
-          try {
+        } else {
+          // unmute track if present or create
+          const track = meetingState.localVideoTrack;
+          if (track) {
+            await track.unmute();
+
+            if (canceled) {
+              return;
+            }
+
+            meetingDispatch({
+              type: "setLocalVideoTrackMutedActualState",
+              payload: track.isMuted,
+            });
+
+            console.log(logTag, "unmuted video track");
+          } else {
             // create track
             const track = await createLocalVideoTrack().catch(
               videoErrorHandler
             );
+
             if (canceled) {
               track?.stop();
               return;
@@ -166,12 +210,12 @@ export const useLocalTracks = () => {
             }
 
             console.log(logTag, "created video track");
-          } catch (error) {
-            console.error(logTag, "error creating video track", error);
           }
-        })();
+        }
+      } catch (error) {
+        console.error(logTag, "error handling video track", error);
       }
-    }
+    })();
 
     return () => {
       canceled = true;
