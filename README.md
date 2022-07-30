@@ -1,6 +1,8 @@
 # LiveMeet Client
 
-Web client for a simple video conferencing app written in react with livekit. For educational purpose only, not for production.
+Web client for a simple video conferencing app written in react with livekit.
+
+**In development, not ready for use in production**
 
 # Develop
 
