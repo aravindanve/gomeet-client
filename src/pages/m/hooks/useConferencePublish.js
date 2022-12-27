@@ -4,7 +4,7 @@ import { useMeetingContext } from "../../../contexts/meeting";
 const logTag = "CONFERENCE_PUBLISH";
 
 export const useConferencePublish = () => {
-  const [meetingState, meetingDispatch] = useMeetingContext();
+  const [meetingState] = useMeetingContext();
 
   const audioPublishedRef = useRef(false);
   const audioQueueRef = useRef(Promise.resolve());

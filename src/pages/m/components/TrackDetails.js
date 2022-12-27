@@ -1,11 +1,6 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  FormLabel,
-  Text,
-} from "@chakra-ui/react";
+import { FormLabel, Text } from "@chakra-ui/react";
 import { useMeetingContext } from "../../../contexts/meeting";
+import AlertFlex from "./AlertFlex";
 
 export default function TrackDetails() {
   const [meetingState] = useMeetingContext();
@@ -20,20 +15,10 @@ export default function TrackDetails() {
         on the preview
       </Text>
       {meetingState.localAudioTrackError ? (
-        <Alert status="warning" fontSize="sm" p={1} pl={3} mt={2}>
-          <AlertIcon />
-          <AlertDescription>
-            {meetingState.localAudioTrackError}
-          </AlertDescription>
-        </Alert>
+        <AlertFlex mt={2}>{meetingState.localAudioTrackError}</AlertFlex>
       ) : null}
       {meetingState.localVideoTrackError ? (
-        <Alert status="warning" fontSize="sm" p={1} pl={3} mt={2}>
-          <AlertIcon />
-          <AlertDescription>
-            {meetingState.localVideoTrackError}
-          </AlertDescription>
-        </Alert>
+        <AlertFlex mt={2}>{meetingState.localVideoTrackError}</AlertFlex>
       ) : null}
     </>
   );

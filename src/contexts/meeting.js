@@ -10,6 +10,7 @@ const initialMeetingState = {
   meetingError: "",
   participant: {},
   participants: [],
+  participantMap: {},
   participantsWaiting: [],
   localAudioTrack: undefined,
   localAudioTrackError: "",
@@ -188,9 +189,15 @@ function meetingReducer(state, action) {
         };
       });
 
+      const participantMap = participants.reduce(
+        (acc, it) => ((acc[it.id] = it), acc),
+        {}
+      );
+
       return {
         ...state,
         participants,
+        participantMap,
         conferenceRoomParticipants,
       };
     case "setLeft":
